@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KTB – วิเคราะห์หุ้นเชิงลึก ปี 2568</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --primary: #0A3D62;
+    --primary-light: #1A5276;
+    --accent: #16A085;
+    --accent2: #E67E22;
+    --danger: #C0392B;
+    --success: #27AE60;
+    --bg: #F0F4F8;
+    --card: #FFFFFF;
+    --border: #D5DDE5;
+    --text: #1A202C;
+    --text-muted: #5A6A7A;
+    --text-light: #8899AA;
+    --gold: #D4AC0D;
+    --shadow: 0 2px 12px rgba(10,61,98,0.10);
+    --shadow-lg: 0 8px 32px rgba(10,61,98,0.14);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans Thai', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14.5px;
+    line-height: 1.7;
+  }
+  /* ── HEADER ── */
+  .site-header {
+    background: linear-gradient(135deg, var(--primary) 0%, #0D5A8A 60%, #16A085 100%);
+    color: white;
+    padding: 28px 40px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .site-header .brand { display: flex; align-items: center; gap: 16px; }
+  .logo-box {
+    width: 54px; height: 54px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: 800; letter-spacing: -1px;
+    border: 2px solid rgba(255,255,255,0.3);
+  }
+  .site-header h1 { font-size: 22px; font-weight: 700; }
+  .site-header .sub { font-size: 13px; opacity: 0.75; margin-top: 2px; }
+  .header-stats { display: flex; gap: 28px; flex-wrap: wrap; }
+  .hstat { text-align: center; }
+  .hstat .val { font-size: 22px; font-weight: 700; font-family: 'IBM Plex Mono', monospace; }
+  .hstat .lbl { font-size: 11.5px; opacity: 0.7; margin-top: 2px; }
+  .badge-buy {
+    background: linear-gradient(135deg, var(--success), #1ABC9C);
+    color: white; font-weight: 700; padding: 8px 20px;
+    border-radius: 40px; font-size: 13px; letter-spacing: 0.5px;
+    box-shadow: 0 4px 14px rgba(39,174,96,0.4);
+  }
+  /* ── NAV TABS ── */
+  .tab-nav {
+    background: var(--card);
+    border-bottom: 2px solid var(--border);
+    display: flex; gap: 0;
+    overflow-x: auto;
+    padding: 0 20px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .tab-btn {
+    padding: 14px 20px;
+    border: none; background: none;
+    font-family: 'Noto Sans Thai', sans-serif;
+    font-size: 13.5px; font-weight: 500;
+    color: var(--text-muted); cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap; transition: all 0.2s;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .tab-btn:hover { color: var(--primary); }
+  .tab-btn.active {
+    color: var(--primary); font-weight: 700;
+    border-bottom-color: var(--accent);
+  }
+  .tab-icon { font-size: 15px; }
+  /* ── LAYOUT ── */
+  .container { max-width: 1280px; margin: 0 auto; padding: 28px 20px; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+  /* ── CARDS ── */
+  .card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .card-title {
+    font-size: 15px; font-weight: 700;
+    color: var(--primary); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+    padding-bottom: 10px; border-bottom: 1px solid var(--border);
+  }
+  .section-title {
+    font-size: 18px; font-weight: 700;
+    color: var(--primary); margin-bottom: 18px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title::before {
+    content: '';
+    width: 4px; height: 24px;
+    background: linear-gradient(var(--accent), var(--primary));
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  /* ── GRIDS ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+  @media(max-width: 900px) {
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+    .grid-6 { grid-template-columns: 1fr 1fr 1fr; }
+    .grid-3 { grid-template-columns: 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+  /* ── KPI CARDS ── */
+  .kpi {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 16px 18px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    transition: transform 0.2s;
+  }
+  .kpi:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+  .kpi-label { font-size: 11.5px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+  .kpi-value { font-size: 26px; font-weight: 800; font-family: 'IBM Plex Mono', monospace; color: var(--primary); margin: 4px 0 2px; line-height: 1; }
+  .kpi-value.green { color: var(--success); }
+  .kpi-value.orange { color: var(--accent2); }
+  .kpi-value.red { color: var(--danger); }
+  .kpi-value.gold { color: var(--gold); }
+  .kpi-sub { font-size: 12px; color: var(--text-muted); }
+  .kpi-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 20px;
+    font-size: 11px; font-weight: 600; margin-top: 4px;
+  }
+  .badge-green { background: #D5F5E3; color: #1E8449; }
+  .badge-yellow { background: #FEF9E7; color: #B7770D; }
+  .badge-red { background: #FDEDEC; color: #B03A2E; }
+  .badge-blue { background: #EBF5FB; color: #1A5276; }
+  /* ── PROGRESS BAR ── */
+  .progress-row { margin-bottom: 14px; }
+  .progress-label { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 12.5px; }
+  .progress-label span:first-child { color: var(--text-muted); font-weight: 500; }
+  .progress-label span:last-child { font-weight: 700; font-family: 'IBM Plex Mono'; }
+  .progress-bar-bg { height: 8px; background: #E8EDF2; border-radius: 6px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; border-radius: 6px; transition: width 1s ease; }
+  .fill-green { background: linear-gradient(to right, #27AE60, #1ABC9C); }
+  .fill-blue { background: linear-gradient(to right, var(--primary), var(--accent)); }
+  .fill-orange { background: linear-gradient(to right, var(--accent2), #F39C12); }
+  .fill-red { background: linear-gradient(to right, #C0392B, #E74C3C); }
+  /* ── TABLE ── */
+  .styled-table {
+    width: 100%; border-collapse: collapse; font-size: 13.5px;
+  }
+  .styled-table th {
+    background: var(--primary); color: white;
+    padding: 10px 14px; text-align: left;
+    font-weight: 600; font-size: 12.5px;
+  }
+  .styled-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  .styled-table tr:last-child td { border-bottom: none; }
+  .styled-table tr:hover td { background: #F8FAFC; }
+  .text-right { text-align: right; }
+  .text-center { text-align: center; }
+  .font-mono { font-family: 'IBM Plex Mono', monospace; }
+  .text-green { color: var(--success); font-weight: 600; }
+  .text-red { color: var(--danger); font-weight: 600; }
+  .text-orange { color: var(--accent2); font-weight: 600; }
+  .text-blue { color: var(--primary); font-weight: 600; }
+  /* ── SCORE RING ── */
+  .score-grid { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+  .score-item { text-align: center; }
+  .ring-wrap { position: relative; width: 100px; height: 100px; margin: 0 auto 8px; }
+  .ring-wrap svg { transform: rotate(-90deg); }
+  .ring-center {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center; line-height: 1;
+  }
+  .ring-num { font-size: 24px; font-weight: 800; font-family: 'IBM Plex Mono'; }
+  .ring-den { font-size: 12px; color: var(--text-muted); }
+  .score-label { font-size: 12.5px; font-weight: 600; color: var(--text-muted); }
+  /* ── ALERT BOXES ── */
+  .alert {
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    display: flex; gap: 10px; align-items: flex-start;
+    font-size: 13.5px;
+  }
+  .alert-green { background: #EAFAF1; border-left: 4px solid var(--success); color: #1E6D3B; }
+  .alert-yellow { background: #FEF9E7; border-left: 4px solid var(--gold); color: #7D6608; }
+  .alert-red { background: #FDEDEC; border-left: 4px solid var(--danger); color: #922B21; }
+  .alert-blue { background: #EBF5FB; border-left: 4px solid var(--primary); color: #1A5276; }
+  /* ── CALCULATOR ── */
+  .calc-wrap { background: var(--bg); border-radius: 12px; padding: 20px; }
+  .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-size: 12.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
+  .form-control {
+    width: 100%; padding: 10px 14px;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-family: 'Noto Sans Thai', sans-serif;
+    font-size: 14px; color: var(--text);
+    background: var(--card); outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-control:focus { border-color: var(--accent); }
+  .btn-calc {
+    width: 100%; padding: 12px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white; border: none; border-radius: 10px;
+    font-family: 'Noto Sans Thai', sans-serif;
+    font-size: 15px; font-weight: 700;
+    cursor: pointer; transition: opacity 0.2s;
+    margin-top: 8px;
+  }
+  .btn-calc:hover { opacity: 0.88; }
+  .result-box {
+    background: linear-gradient(135deg, #EAF5FF, #E8F8F0);
+    border-radius: 12px; padding: 18px;
+    border: 1.5px solid #C5E6FF;
+    margin-top: 16px;
+  }
+  .result-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px dashed #C5E6FF; }
+  .result-row:last-child { border-bottom: none; padding-top: 10px; }
+  .result-key { font-size: 13px; color: var(--text-muted); }
+  .result-val { font-size: 16px; font-weight: 700; font-family: 'IBM Plex Mono'; color: var(--primary); }
+  .result-val.big { font-size: 22px; color: var(--success); }
+  /* ── DCA TABLE ── */
+  .dca-table th { background: #0A3D62 !important; }
+  .dca-highlight { background: #E8F8F5 !important; }
+  /* ── POWER GRID ── */
+  .power-item {
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card);
+  }
+  .power-name { font-weight: 700; font-size: 13px; color: var(--primary); margin-bottom: 4px; }
+  .power-level { display: flex; gap: 4px; margin-bottom: 6px; }
+  .power-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-filled { background: var(--accent); }
+  .dot-empty { background: var(--border); }
+  .power-desc { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; }
+  /* ── CHART CONTAINER ── */
+  .chart-wrap { position: relative; height: 280px; }
+  .chart-wrap-sm { position: relative; height: 220px; }
+  /* ── TIMELINE ── */
+  .timeline { position: relative; padding-left: 24px; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+  .t-item { position: relative; margin-bottom: 16px; }
+  .t-dot { position: absolute; left: -20px; top: 4px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; }
+  .t-label { font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 2px; }
+  .t-text { font-size: 13.5px; }
+  /* ── MB ── */
+  .mb-8 { margin-bottom: 8px; }
+  .mb-12 { margin-bottom: 12px; }
+  .mb-16 { margin-bottom: 16px; }
+  .mb-24 { margin-bottom: 24px; }
+  .mb-32 { margin-bottom: 32px; }
+  /* ── TAG ── */
+  .tag {
+    display: inline-block; padding: 3px 10px;
+    border-radius: 20px; font-size: 11.5px; font-weight: 600;
+  }
+  .tag-blue { background: #EBF5FB; color: var(--primary); }
+  .tag-green { background: #EAFAF1; color: #1E6D3B; }
+  .tag-orange { background: #FEF5E7; color: #935116; }
+  .tag-red { background: #FDEDEC; color: #922B21; }
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+  .text-sm { font-size: 12.5px; }
+  .text-xs { font-size: 11.5px; }
+  .opacity-70 { opacity: 0.7; }
+  .fw-700 { font-weight: 700; }
+  .two-col { display: flex; gap: 20px; flex-wrap: wrap; }
+  .two-col > * { flex: 1 1 300px; }
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: #B0BEC5; border-radius: 3px; }
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center; padding: 20px;
+    font-size: 12px; color: var(--text-muted);
+    border-top: 1px solid var(--border); margin-top: 32px;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="brand">
+    <div class="logo-box">KTB</div>
+    <div>
+      <h1>ธนาคารกรุงไทย จำกัด (มหาชน)</h1>
+      <div class="sub">วิเคราะห์เชิงลึก ปี 2568 (FY2025) · ข้อมูล ณ 31 ธ.ค. 2568 · ราคาอ้างอิง ฿28.25</div>
+    </div>
+  </div>
+  <div class="header-stats">
+    <div class="hstat"><div class="val">28.25</div><div class="lbl">ราคา (บาท)</div></div>
+    <div class="hstat"><div class="val">9.45%</div><div class="lbl">Div Yield (FY25E)</div></div>
+    <div class="hstat"><div class="val">0.89×</div><div class="lbl">P/BV</div></div>
+    <div class="hstat"><div class="val">8.19×</div><div class="lbl">P/E</div></div>
+  </div>
+  <div class="badge-buy">⭐ BUY</div>
+</header>
+
+<!-- TAB NAV -->
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="showTab('overview')"><span class="tab-icon">📊</span> ภาพรวม</button>
+  <button class="tab-btn" onclick="showTab('macro')"><span class="tab-icon">🌏</span> มหภาค & กลยุทธ์</button>
+  <button class="tab-btn" onclick="showTab('pl')"><span class="tab-icon">💰</span> กำไร & คุณภาพสินทรัพย์</button>
+  <button class="tab-btn" onclick="showTab('capital')"><span class="tab-icon">🛡️</span> เงินกองทุน & สภาพคล่อง</button>
+  <button class="tab-btn" onclick="showTab('valuation')"><span class="tab-icon">📈</span> มูลค่าหุ้น</button>
+  <button class="tab-btn" onclick="showTab('dividend')"><span class="tab-icon">🎯</span> ปันผล & คำนวณ</button>
+</nav>
+
+<!-- ============================================================
+     TAB 1: OVERVIEW
+     ============================================================ -->
+<div id="tab-overview" class="tab-panel active">
+<div class="container">
+
+  <!-- KPI ROW -->
+  <div class="mb-24 grid-6">
+    <div class="kpi">
+      <div class="kpi-label">กำไรสุทธิ FY25</div>
+      <div class="kpi-value green">52,221</div>
+      <div class="kpi-sub">ล้านบาท (+4.5% YoY)</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">EPS (บาท/หุ้น)</div>
+      <div class="kpi-value">3.45</div>
+      <div class="kpi-sub">บาท/หุ้น (Consolidated)</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">ปันผล FY25E</div>
+      <div class="kpi-value gold">2.67</div>
+      <div class="kpi-sub">บาท/หุ้น (ทั้งปี)</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">สินทรัพย์รวม</div>
+      <div class="kpi-value">3.93</div>
+      <div class="kpi-sub">ล้านล้านบาท</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">ROE (FY25)</div>
+      <div class="kpi-value green">13.19%</div>
+      <div class="kpi-sub">ROA: 1.64%</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">CAR (กลุ่มฯ)</div>
+      <div class="kpi-value">22.12%</div>
+      <div class="kpi-sub">เกณฑ์ ธปท. ≥ 12%</div>
+    </div>
+  </div>
+
+  <!-- MAIN 2 COLS -->
+  <div class="grid-2 mb-24">
+    <!-- CHART: Revenue trend -->
+    <div class="card">
+      <div class="card-title">📈 แนวโน้มรายได้ดอกเบี้ยสุทธิ & กำไรสุทธิ (รายไตรมาส)</div>
+      <div class="chart-wrap">
+        <canvas id="chartRevenue"></canvas>
+      </div>
+    </div>
+    <!-- KEY RATIOS -->
+    <div class="card">
+      <div class="card-title">⚖️ อัตราส่วนทางการเงินที่สำคัญ</div>
+      <div class="progress-row">
+        <div class="progress-label"><span>CAR (เงินกองทุนต่อสินทรัพย์เสี่ยง)</span><span style="color:var(--success)">22.12%</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill fill-green" style="width:88%"></div></div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label"><span>CET1 Ratio (เงินกองทุนชั้นที่ 1)</span><span style="color:var(--success)">19.24%</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill fill-green" style="width:77%"></div></div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label"><span>CASA Ratio (เงินฝากต้นทุนต่ำ)</span><span style="color:var(--accent)">78.8%</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill fill-blue" style="width:78.8%"></div></div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label"><span>สินเชื่อ/เงินฝาก (L/D Ratio)</span><span style="color:var(--accent2)">94.66%</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill fill-orange" style="width:75%"></div></div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label"><span>Coverage Ratio (สำรอง/NPL)</span><span style="color:var(--success)">200.9%</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill fill-green" style="width:100%"></div></div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label"><span>Payout Ratio (FY25)</span><span style="color:var(--gold)">77.4%</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill fill-orange" style="width:77.4%"></div></div>
+      </div>
+      <div class="progress-row" style="margin-bottom:0">
+        <div class="progress-label"><span>NPL Ratio (Stage 3)</span><span style="color:var(--danger)">3.38%</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill fill-red" style="width:34%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SWOT GRID -->
+  <div class="mb-24">
+    <div class="section-title">🔍 สรุป SWOT Analysis – KTB 2568</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title" style="color:var(--success)">✅ จุดแข็ง (Strengths)</div>
+        <div class="alert alert-green mb-8">🏛️ รัฐถือหุ้น 55.05% – ลดความเสี่ยงระบบ ได้สัญญาภาครัฐขนาดใหญ่</div>
+        <div class="alert alert-green mb-8">💳 CASA Ratio สูง 78.8% – ต้นทุนเงินฝากต่ำเพียง 1.29%</div>
+        <div class="alert alert-green mb-8">💰 เงินกองทุนแข็งแกร่ง CAR 22.12% – เกินเกณฑ์ขั้นต่ำมาก</div>
+        <div class="alert alert-green">📱 ระบบ Krungthai NEXT + Paotang – Ecosystem digital ที่แข็งแกร่ง</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--danger)">⚠️ จุดอ่อน & ความเสี่ยง (Weaknesses & Risks)</div>
+        <div class="alert alert-yellow mb-8">📉 NIM ลดลงจาก 3.20% → ~2.69% (ดอกเบี้ยขาลง + สินเชื่อซบ)</div>
+        <div class="alert alert-yellow mb-8">🏚️ NPL Stage 3 สูง 3.38% – สูงกว่าค่าเฉลี่ยอุตสาหกรรม</div>
+        <div class="alert alert-yellow mb-8">🐌 สินเชื่อเติบโตช้า 0.46% YoY (โครงสร้างเศรษฐกิจไทยชะลอ)</div>
+        <div class="alert alert-red">💻 ค่าตัดจำหน่ายซอฟต์แวร์สูง 3,072 ล้านบาท (เพิ่ม 14.8%)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCORES -->
+  <div class="card mb-24">
+    <div class="card-title">🏆 คะแนนประเมิน Investment Rating (10 คะแนน)</div>
+    <div class="score-grid">
+      <div class="score-item">
+        <div class="ring-wrap">
+          <svg width="100" height="100" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#E8EDF2" stroke-width="10"/>
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#27AE60" stroke-width="10" stroke-dasharray="264" stroke-dashoffset="79" stroke-linecap="round"/>
+          </svg>
+          <div class="ring-center"><div class="ring-num" style="color:#27AE60">7</div><div class="ring-den">/10</div></div>
+        </div>
+        <div class="score-label">💰 Dividend</div>
+      </div>
+      <div class="score-item">
+        <div class="ring-wrap">
+          <svg width="100" height="100" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#E8EDF2" stroke-width="10"/>
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#3498DB" stroke-width="10" stroke-dasharray="264" stroke-dashoffset="132" stroke-linecap="round"/>
+          </svg>
+          <div class="ring-center"><div class="ring-num" style="color:#3498DB">5</div><div class="ring-den">/10</div></div>
+        </div>
+        <div class="score-label">📈 Growth</div>
+      </div>
+      <div class="score-item">
+        <div class="ring-wrap">
+          <svg width="100" height="100" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#E8EDF2" stroke-width="10"/>
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#E67E22" stroke-width="10" stroke-dasharray="264" stroke-dashoffset="52" stroke-linecap="round"/>
+          </svg>
+          <div class="ring-center"><div class="ring-num" style="color:#E67E22">8</div><div class="ring-den">/10</div></div>
+        </div>
+        <div class="score-label">🛡️ Safety</div>
+      </div>
+      <div class="score-item">
+        <div class="ring-wrap">
+          <svg width="100" height="100" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#E8EDF2" stroke-width="10"/>
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#9B59B6" stroke-width="10" stroke-dasharray="264" stroke-dashoffset="79" stroke-linecap="round"/>
+          </svg>
+          <div class="ring-center"><div class="ring-num" style="color:#9B59B6">7</div><div class="ring-den">/10</div></div>
+        </div>
+        <div class="score-label">📊 Valuation</div>
+      </div>
+      <div class="score-item">
+        <div class="ring-wrap">
+          <svg width="100" height="100" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#E8EDF2" stroke-width="10"/>
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#D4AC0D" stroke-width="10" stroke-dasharray="264" stroke-dashoffset="79" stroke-linecap="round"/>
+          </svg>
+          <div class="ring-center"><div class="ring-num" style="color:#D4AC0D">7</div><div class="ring-den">/10</div></div>
+        </div>
+        <div class="score-label">🏗️ Capital</div>
+      </div>
+      <div class="score-item">
+        <div class="ring-wrap">
+          <svg width="100" height="100" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#E8EDF2" stroke-width="10"/>
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#16A085" stroke-width="10" stroke-dasharray="264" stroke-dashoffset="39" stroke-linecap="round"/>
+          </svg>
+          <div class="ring-center"><div class="ring-num" style="color:#16A085">8.5</div><div class="ring-den">/10</div></div>
+        </div>
+        <div class="score-label">🏛️ Ecosystem</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ============================================================
+     TAB 2: MACRO
+     ============================================================ -->
+<div id="tab-macro" class="tab-panel">
+<div class="container">
+  <div class="section-title">🌏 มหภาคและกลยุทธ์</div>
+
+  <div class="grid-2 mb-24">
+    <div class="card">
+      <div class="card-title">🏛️ วัฏจักรเศรษฐกิจและผลต่อ KTB</div>
+      <table class="styled-table">
+        <thead><tr><th>ตัวแปรเศรษฐกิจ (GDP Component)</th><th>ทิศทาง 2025-26</th><th>ผลต่อ KTB</th></tr></thead>
+        <tbody>
+          <tr><td>การส่งออก (X)</td><td class="text-green">▲ ฟื้นตัว (chip, EV)</td><td class="text-green">+ สินเชื่อ Corporate / Trade Finance</td></tr>
+          <tr><td>การลงทุนรัฐ (G)</td><td class="text-green">▲ เพิ่ม (เมกะโปรเจกต์)</td><td class="text-green">+ สัญญาภาครัฐ (GFMIS, Project Loan)</td></tr>
+          <tr><td>การบริโภค (C)</td><td class="text-orange">→ ทรงตัว (หนี้ครัวเรือนสูง)</td><td class="text-orange">~ สินเชื่อรายย่อยชะลอ</td></tr>
+          <tr><td>การลงทุนเอกชน (I)</td><td class="text-orange">→ ฟื้นช้า (ดอกเบี้ยยังสูง)</td><td class="text-orange">~ SME Loan ระมัดระวัง</td></tr>
+          <tr><td>อัตราดอกเบี้ย</td><td class="text-orange">▽ ลดลง 2026-27</td><td class="text-red">- NIM กดดัน (แต่กองทุนได้กำไร)</td></tr>
+        </tbody>
+      </table>
+      <div class="alert alert-blue" style="margin-top:12px">
+        💡 KTB มีสัดส่วนภาครัฐสูง (~22% ของพอร์ต) ช่วยป้องกันความเสี่ยงสินเชื่อด้อยคุณภาพ
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">⚔️ ผลกระทบจากสงครามตะวันออกกลาง</div>
+      <div class="timeline">
+        <div class="t-item">
+          <div class="t-dot" style="background:#E67E22"></div>
+          <div class="t-label">ราคาน้ำมัน ▲</div>
+          <div class="t-text">ต้นทุนธุรกิจอุตสาหกรรม ▲ → NPL SME เพิ่มความเสี่ยง</div>
+        </div>
+        <div class="t-item">
+          <div class="t-dot" style="background:#C0392B"></div>
+          <div class="t-label">ค่าเงินบาท อ่อนค่า</div>
+          <div class="t-text">สินทรัพย์ USD ส่งผลบวกต่อกำไรแลกเปลี่ยน (KTB มีฝั่ง FX แข็งแกร่ง)</div>
+        </div>
+        <div class="t-item">
+          <div class="t-dot" style="background:#27AE60"></div>
+          <div class="t-label">ท่องเที่ยว (ผลพลอยได้)</div>
+          <div class="t-text">นักท่องเที่ยวหลีกเลี่ยงตะวันออกกลาง → ไทยได้รับประโยชน์ → สินเชื่อโรงแรม</div>
+        </div>
+        <div class="t-item">
+          <div class="t-dot" style="background:#9B59B6"></div>
+          <div class="t-label">สรุปผลกระทบสุทธิ</div>
+          <div class="t-text">⚠️ ผลกระทบทางอ้อม จัดการได้ — ไม่มี Exposure โดยตรงในตะวันออกกลาง</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7 POWERS -->
+  <div class="card mb-24">
+    <div class="card-title">⚡ 7 Powers Analysis – KTB</div>
+    <div class="grid-3">
+      <div class="power-item">
+        <div class="power-name">🌐 Network Economies</div>
+        <div class="power-level">
+          <div class="power-dot dot-filled"></div><div class="power-dot dot-filled"></div><div class="power-dot dot-filled"></div><div class="power-dot dot-filled"></div><div class="power-dot dot-empty"></div>
+        </div>
+        <div class="power-desc">ระบบ Paotang 50+ ล้านคน, GFMIS, Krungthai NEXT – Ecosystem ขนาดใหญ่ที่ผูกกับภาครัฐ ยิ่งมีผู้ใช้มาก ค่าธรรมเนียมต่อ unit ยิ่งถูกลง</div>
+        <div class="tag tag-green" style="margin-top:6px">แข็งแกร่ง ★★★★</div>
+      </div>
+      <div class="power-item">
+        <div class="power-name">🔒 Switching Costs</div>
+        <div class="power-level">
+          <div class="power-dot dot-filled"></div><div class="power-dot dot-filled"></div><div class="power-dot dot-filled"></div><div class="power-dot dot-empty"></div><div class="power-dot dot-empty"></div>
+        </div>
+        <div class="power-desc">ลูกค้าราชการ/GFMIS ย้ายยากมาก, สัญญาเช่าระบบ IT กับรัฐระยะยาว, บัตร Paotang ผูกสวัสดิการ บัตรสวัสดิการแห่งรัฐ 14+ ล้านคน</div>
+        <div class="tag tag-blue" style="margin-top:6px">แข็งแกร่ง ★★★</div>
+      </div>
+      <div class="power-item">
+        <div class="power-name">📐 Scale Economies</div>
+        <div class="power-level">
+          <div class="power-dot dot-filled"></div><div class="power-dot dot-filled"></div><div class="power-dot dot-filled"></div><div class="power-dot dot-filled"></div><div class="power-dot dot-empty"></div>
+        </div>
+        <div class="power-desc">สินทรัพย์ 3.93 ล้านล้านบาท ใหญ่ที่สุดในหุ้น SET รัฐบาลลดต้นทุน IT ผ่านบริษัท KTCS แบ่งเบาภาระ Overhead ต่อสินเชื่อได้ดี</div>
+        <div class="tag tag-green" style="margin-top:6px">แข็งแกร่ง ★★★★</div>
+      </div>
+      <div class="power-item">
+        <div class="power-name">🛡️ Counter Positioning</div>
+        <div class="power-level">
+          <div class="power-dot dot-filled"></div><div class="power-dot dot-filled"></div><div class="power-dot dot-filled"></div><div class="power-dot dot-empty"></div><div class="power-dot dot-empty"></div>
+        </div>
+        <div class="power-desc">ธนาคารเอกชนเข้าตลาดภาครัฐยาก เพราะต้องมีความสัมพันธ์ระดับนโยบาย การที่รัฐถือ 55% เป็นกำแพงกั้นธุรกรรมรัฐบาล</div>
+        <div class="tag tag-blue" style="margin-top:6px">ปานกลาง ★★★</div>
+      </div>
+      <div class="power-item">
+        <div class="power-name">⚙️ Process Power</div>
+        <div class="power-level">
+          <div class="power-dot dot-filled"></div><div class="power-dot dot-filled"></div><div class="power-dot dot-empty"></div><div class="power-dot dot-empty"></div><div class="power-dot dot-empty"></div>
+        </div>
+        <div class="power-desc">ระบบ Early Warning (EWS) พัฒนาต่อเนื่อง แต่ยังตามหลัง SCB/KBANK ด้าน AI scoring สำหรับ Retail Credit</div>
+        <div class="tag tag-orange" style="margin-top:6px">ปานกลาง ★★</div>
+      </div>
+      <div class="power-item">
+        <div class="power-name">🏆 Cornered Resource</div>
+        <div class="power-level">
+          <div class="power-dot dot-filled"></div><div class="power-dot dot-filled"></div><div class="power-dot dot-filled"></div><div class="power-dot dot-filled"></div><div class="power-dot dot-filled"></div>
+        </div>
+        <div class="power-desc">สัญญา GFMIS ผูกขาดระบบการเงินภาครัฐทั้งประเทศ, Paotang ผูกขาดบัตรสวัสดิการแห่งรัฐ – ทรัพยากรที่ไม่มีคู่แข่ง</div>
+        <div class="tag tag-green" style="margin-top:6px">แข็งมาก ★★★★★</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scenario Analysis -->
+  <div class="card">
+    <div class="card-title">📊 Scenario Analysis – ดอกเบี้ยปี 2026-2028</div>
+    <div class="grid-3">
+      <div style="background:#EAFAF1;border-radius:10px;padding:16px;border:1px solid #A9DFBF">
+        <div style="font-weight:700;color:#1E6D3B;margin-bottom:8px">🐂 Bull Case: ดอกเบี้ยทรงตัว</div>
+        <div class="text-sm">NIM คงที่ ~2.7%, สินเชื่อ +4%, กำไร +8-10% YoY<br>ราคาเป้าหมาย <strong>฿35-38</strong><br>Div Yield 7.5-8%</div>
+      </div>
+      <div style="background:#EBF5FB;border-radius:10px;padding:16px;border:1px solid #AED6F1">
+        <div style="font-weight:700;color:#1A5276;margin-bottom:8px">🐂 Base Case: ลดดอกเบี้ย 0.5%</div>
+        <div class="text-sm">NIM หด ~-0.1%, สินเชื่อ +2-3%, กำไร +3-5% YoY<br>ราคาเป้าหมาย <strong>฿30-34</strong><br>Div Yield 8-9%</div>
+      </div>
+      <div style="background:#FDEDEC;border-radius:10px;padding:16px;border:1px solid #F1948A">
+        <div style="font-weight:700;color:#922B21;margin-bottom:8px">🐻 Bear Case: ลดดอกเบี้ย 1%+</div>
+        <div class="text-sm">NIM หด ~-0.2%, NPL spike, กำไร -5 ถึง -8% YoY<br>ราคาเป้าหมาย <strong>฿25-28</strong><br>Div Yield ≥10% แต่มีความเสี่ยง</div>
+      </div>
+    </div>
+    <div class="alert alert-blue" style="margin-top:14px">
+      💡 <strong>กรณีฐาน (Base Case)</strong>: KMB-bot คาดว่า ธปท. จะลดดอกเบี้ย 1-2 ครั้งในปี 2026 รวม 0.25-0.50% — KTB รับได้เพราะ Hedge Portfolio และ CASA สูง รักษา Spread ได้ดีกว่าคู่แข่ง
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ============================================================
+     TAB 3: P&L
+     ============================================================ -->
+<div id="tab-pl" class="tab-panel">
+<div class="container">
+  <div class="section-title">💰 กำไรขาดทุนและคุณภาพสินทรัพย์</div>
+
+  <!-- P&L Summary Table -->
+  <div class="card mb-24">
+    <div class="card-title">📋 งบกำไรขาดทุนสรุป ปี 2568 (ล้านบาท)</div>
+    <table class="styled-table">
+      <thead>
+        <tr><th>รายการ</th><th class="text-right">FY2567</th><th class="text-right">FY2568</th><th class="text-right">เปลี่ยนแปลง</th><th class="text-right">สัดส่วน</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="fw-700">รายได้ดอกเบี้ย</td><td class="text-right font-mono">165,105</td><td class="text-right font-mono">147,807</td><td class="text-right text-red">-10.5%</td><td class="text-right text-sm">สินเชื่อซบ + ดอกเบี้ยลด</td></tr>
+        <tr><td class="fw-700">ค่าใช้จ่ายดอกเบี้ย</td><td class="text-right font-mono">(45,990)</td><td class="text-right font-mono">(42,026)</td><td class="text-right text-green">-8.6% ↓ดี</td><td class="text-right text-sm">ต้นทุนเงินฝากลด</td></tr>
+        <tr style="background:#EAF8FF"><td class="fw-700 text-blue">รายได้ดอกเบี้ยสุทธิ (NII)</td><td class="text-right font-mono text-blue">119,115</td><td class="text-right font-mono text-blue">105,781</td><td class="text-right text-red">-11.2%</td><td class="text-right">NIM ~2.69%</td></tr>
+        <tr><td>รายได้ค่าธรรมเนียมสุทธิ</td><td class="text-right font-mono">22,282</td><td class="text-right font-mono">22,957</td><td class="text-right text-green">+3.0%</td><td class="text-right text-sm">14.3% ของ Revenue</td></tr>
+        <tr><td>รายได้การดำเนินงานอื่น</td><td class="text-right font-mono">20,003</td><td class="text-right font-mono">31,890</td><td class="text-right text-green">+59.4% !</td><td class="text-right text-sm">กำไรตราสาร/FX</td></tr>
+        <tr style="background:#EAF8FF"><td class="fw-700 text-blue">รายได้รวม</td><td class="text-right font-mono text-blue">161,400</td><td class="text-right font-mono text-blue">160,628</td><td class="text-right text-orange">-0.5%</td><td></tr>
+        <tr><td>ค่าใช้จ่ายดำเนินงาน + ภาษี</td><td class="text-right font-mono">(80,354)</td><td class="text-right font-mono">(77,647)</td><td class="text-right text-green">-3.4% ↓ดี</td><td class="text-right">CIR 48.3%</td></tr>
+        <tr><td>ผลขาดทุนด้านเครดิต (ECL)</td><td class="text-right font-mono">(31,069)</td><td class="text-right font-mono">(30,760)</td><td class="text-right text-green">-1.0%</td><td class="text-right text-sm">Credit cost ~1.13%</td></tr>
+        <tr style="background:#EAFAF1"><td class="fw-700 text-green">กำไรก่อนภาษี</td><td class="text-right font-mono text-green">61,553</td><td class="text-right font-mono text-green">65,101</td><td class="text-right text-green">+5.8%</td><td></tr>
+        <tr><td>ภาษีเงินได้</td><td class="text-right font-mono">(11,576)</td><td class="text-right font-mono">(12,880)</td><td class="text-right">—</td><td class="text-right">อัตรา 20%</td></tr>
+        <tr style="background:#EAFAF1"><td class="fw-700" style="font-size:15px">🏆 กำไรสุทธิ (รวม)</td><td class="text-right font-mono" style="font-size:15px">49,977</td><td class="text-right font-mono text-green" style="font-size:15px">52,221</td><td class="text-right text-green">+4.5%</td><td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid-2 mb-24">
+    <!-- NPL Quality -->
+    <div class="card">
+      <div class="card-title">⚠️ คุณภาพสินทรัพย์ – TFRS9 Stage Analysis</div>
+      <div class="chart-wrap-sm">
+        <canvas id="chartNPL"></canvas>
+      </div>
+      <div class="grid-2" style="margin-top:14px;gap:10px">
+        <div style="background:#EBF5FB;border-radius:8px;padding:12px">
+          <div class="text-xs" style="color:#1A5276">Stage 1 (ปกติ)</div>
+          <div style="font-size:18px;font-weight:800;color:#1A5276;font-family:'IBM Plex Mono'">2,432,865</div>
+          <div class="text-xs text-green">88.9% · ECL 43,687</div>
+        </div>
+        <div style="background:#FEF5E7;border-radius:8px;padding:12px">
+          <div class="text-xs" style="color:#935116">Stage 2 (เฝ้าระวัง)</div>
+          <div style="font-size:18px;font-weight:800;color:#E67E22;font-family:'IBM Plex Mono'">209,387</div>
+          <div class="text-xs text-orange">7.65% · ECL 71,427</div>
+        </div>
+        <div style="background:#FDEDEC;border-radius:8px;padding:12px">
+          <div class="text-xs" style="color:#922B21">Stage 3 (NPL)</div>
+          <div style="font-size:18px;font-weight:800;color:#C0392B;font-family:'IBM Plex Mono'">92,519</div>
+          <div class="text-xs text-red">3.38% · ECL 70,091</div>
+        </div>
+        <div style="background:#EAFAF1;border-radius:8px;padding:12px">
+          <div class="text-xs" style="color:#1E6D3B">Coverage Ratio</div>
+          <div style="font-size:18px;font-weight:800;color:#27AE60;font-family:'IBM Plex Mono'">200.9%</div>
+          <div class="text-xs text-green">สำรองมากกว่า NPL 2× ✅</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Revenue Mix -->
+    <div class="card">
+      <div class="card-title">🍰 สัดส่วนรายได้ FY2568</div>
+      <div class="chart-wrap">
+        <canvas id="chartRevMix"></canvas>
+      </div>
+      <div class="alert alert-yellow" style="margin-top:10px;font-size:12.5px">
+        ⚠️ Fee Income เพิ่มขึ้นแค่ 3% ยังไม่ทดแทน NII ที่หายไป 13,334 ล้านบาทได้ — ต้องติดตามการขาย Bancassurance และ Fund Management
+      </div>
+    </div>
+  </div>
+
+  <!-- Cost & Efficiency -->
+  <div class="grid-2 mb-24">
+    <div class="card">
+      <div class="card-title">⚙️ ประสิทธิภาพการดำเนินงาน</div>
+      <table class="styled-table">
+        <thead><tr><th>ตัวชี้วัด</th><th>FY2567</th><th>FY2568</th><th>เทียบอุตสาหกรรม</th></tr></thead>
+        <tbody>
+          <tr><td>NIM</td><td class="font-mono">~3.20%</td><td class="font-mono text-red">~2.69%</td><td>ต่ำกว่าเฉลี่ย (~2.8%)</td></tr>
+          <tr><td>CIR (Cost to Income)</td><td class="font-mono">49.8%</td><td class="font-mono text-green">48.3%</td><td>ดีกว่าค่าเฉลี่ย (~50%)</td></tr>
+          <tr><td>Credit Cost</td><td class="font-mono">1.15%</td><td class="font-mono text-green">1.13%</td><td>ปานกลาง</td></tr>
+          <tr><td>ROE</td><td class="font-mono">11.54%</td><td class="font-mono text-green">13.19%</td><td>ดีขึ้นมาก</td></tr>
+          <tr><td>ROA</td><td class="font-mono">1.38%</td><td class="font-mono text-green">1.64%</td><td>ดีขึ้น</td></tr>
+          <tr><td>CASA Ratio</td><td class="font-mono">—</td><td class="font-mono text-green">78.8%</td><td>สูงมาก ✅</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">📊 Loan Portfolio By Sector (ธ.ค. 2568)</div>
+      <div class="chart-wrap">
+        <canvas id="chartLoanSector"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fee Income Analysis -->
+  <div class="card">
+    <div class="card-title">💳 วิเคราะห์รายได้ค่าธรรมเนียม FY2568</div>
+    <div class="grid-4">
+      <div class="kpi">
+        <div class="kpi-label">ATM & Digital</div>
+        <div class="kpi-value" style="font-size:20px">9,628</div>
+        <div class="kpi-sub">ล้านบาท (+ทรงตัว)</div>
+        <span class="kpi-badge badge-blue">30.5% ของ Fee</span>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Bancassurance & Fund</div>
+        <div class="kpi-value" style="font-size:20px">7,068</div>
+        <div class="kpi-sub">ล้านบาท (+4.0% YoY)</div>
+        <span class="kpi-badge badge-green">22.4% ของ Fee</span>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">ค้ำประกัน/LC</div>
+        <div class="kpi-value" style="font-size:20px">1,312</div>
+        <div class="kpi-sub">ล้านบาท</div>
+        <span class="kpi-badge badge-yellow">4.2% ของ Fee</span>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">อื่น ๆ</div>
+        <div class="kpi-value" style="font-size:20px">13,582</div>
+        <div class="kpi-sub">ล้านบาท (+8.4% YoY)</div>
+        <span class="kpi-badge badge-blue">43.0% ของ Fee</span>
+      </div>
+    </div>
+    <div class="alert alert-green" style="margin-top:14px">
+      ✅ รายได้อื่น ๆ เพิ่มขึ้น 8.4% — บ่งชี้ถึงการขยาย Digital Revenue ผ่าน Paotang Platform
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ============================================================
+     TAB 4: CAPITAL
+     ============================================================ -->
+<div id="tab-capital" class="tab-panel">
+<div class="container">
+  <div class="section-title">🛡️ เงินกองทุนและสภาพคล่อง</div>
+
+  <div class="grid-4 mb-24">
+    <div class="kpi">
+      <div class="kpi-label">CET1 Ratio (กลุ่ม)</div>
+      <div class="kpi-value green">19.24%</div>
+      <div class="kpi-sub">เกณฑ์ ≥ 8.00%</div>
+      <span class="kpi-badge badge-green">เกินมา +11.24%</span>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Tier 1 Ratio (กลุ่ม)</div>
+      <div class="kpi-value green">20.18%</div>
+      <div class="kpi-sub">เกณฑ์ ≥ 9.50%</div>
+      <span class="kpi-badge badge-green">เกินมา +10.68%</span>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">CAR Total (กลุ่ม)</div>
+      <div class="kpi-value green">22.12%</div>
+      <div class="kpi-sub">เกณฑ์ ≥ 12.00%</div>
+      <span class="kpi-badge badge-green">เกินมา +10.12%</span>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Capital Surplus (ส่วนเกิน)</div>
+      <div class="kpi-value">~199B</div>
+      <div class="kpi-sub">ล้านบาทเหนือขั้นต่ำ</div>
+      <span class="kpi-badge badge-green">สบาย ✅</span>
+    </div>
+  </div>
+
+  <!-- Capital Structure -->
+  <div class="grid-2 mb-24">
+    <div class="card">
+      <div class="card-title">🏗️ โครงสร้างเงินกองทุน ณ ธ.ค. 2568</div>
+      <div class="chart-wrap">
+        <canvas id="chartCapital"></canvas>
+      </div>
+      <table class="styled-table" style="margin-top:12px">
+        <thead><tr><th>รายการ</th><th class="text-right">ธ.ค. 2567</th><th class="text-right">ธ.ค. 2568</th><th>เปลี่ยน</th></tr></thead>
+        <tbody>
+          <tr><td>Tier 1 (CET1 ส่วนของเจ้าของ)</td><td class="text-right font-mono">387,968</td><td class="text-right font-mono">411,878</td><td class="text-green">+6.2%</td></tr>
+          <tr><td>Tier 1 (ตราสารทางการเงิน)</td><td class="text-right font-mono">20,121</td><td class="text-right font-mono">20,045</td><td>-0.4%</td></tr>
+          <tr><td>Tier 2 (หุ้นกู้ด้อยสิทธิ)</td><td class="text-right font-mono">18,080</td><td class="text-right font-mono">18,080</td><td>0%</td></tr>
+          <tr><td>Tier 2 (สำรองส่วนปกติ)</td><td class="text-right font-mono">23,189</td><td class="text-right font-mono">23,522</td><td class="text-green">+1.4%</td></tr>
+          <tr style="background:#EAF8FF"><td class="fw-700">เงินกองทุนรวม</td><td class="text-right font-mono fw-700">449,358</td><td class="text-right font-mono fw-700 text-green">473,525</td><td class="text-green fw-700">+5.4%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">💧 สภาพคล่อง (LCR & NSFR)</div>
+      <div class="alert alert-green mb-16">
+        ✅ LCR และ NSFR ผ่านเกณฑ์ ธปท. ทุกไตรมาส — รายงานเปิดเผยที่ www.krungthai.com
+      </div>
+      <div class="progress-row">
+        <div class="progress-label"><span>Loan to Deposit Ratio</span><span>94.66%</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill fill-orange" style="width:75%"></div></div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label"><span>CASA Ratio (เงินฝากต้นทุนต่ำ)</span><span style="color:var(--success)">78.8%</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill fill-green" style="width:78.8%"></div></div>
+      </div>
+      <div class="divider"></div>
+      <div style="font-size:13px;font-weight:600;color:var(--primary);margin-bottom:10px">แหล่งที่มาเงินทุน (% ของสินทรัพย์รวม)</div>
+      <div class="progress-row">
+        <div class="progress-label"><span>เงินรับฝาก</span><span>72.82%</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill fill-blue" style="width:72.82%"></div></div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label"><span>ส่วนของเจ้าของ</span><span>12.38%</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill fill-green" style="width:30%"></div></div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label"><span>รายการระหว่างธนาคาร</span><span>6.97%</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill fill-orange" style="width:20%"></div></div>
+      </div>
+      <div class="progress-row" style="margin-bottom:0">
+        <div class="progress-label"><span>ตราสารหนี้ที่ออก</span><span>3.17%</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill fill-blue" style="width:10%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Additional Tier 1 note -->
+  <div class="card">
+    <div class="card-title">ℹ️ ตราสาร AT1 – แผนไถ่ถอน 2569</div>
+    <div class="two-col">
+      <div>
+        <div class="alert alert-blue mb-12">
+          📅 ที่ประชุมบอร์ด 8 ต.ค. 2568 มีมติไถ่ถอน AT1 (USD 600M = ~18,820 ล้านบาท) ในวันที่ <strong>25 มีนาคม 2569</strong> ซึ่งได้รับความเห็นชอบจาก ธปท. แล้ว
+        </div>
+        <div class="alert alert-yellow">
+          ⚠️ การไถ่ถอน AT1 จะทำให้ Tier 1 Capital ลดลง ~20,000 ล้าน — แต่ CET1 ยังแข็งแกร่ง 19.24% รองรับได้สบาย โดยไม่จำเป็นต้องออกตราสารทดแทนทันที
+        </div>
+      </div>
+      <div>
+        <table class="styled-table">
+          <thead><tr><th>สถานการณ์</th><th>Tier 1 หลัง AT1</th><th>CAR</th></tr></thead>
+          <tbody>
+            <tr><td>ก่อนไถ่ถอน (ปัจจุบัน)</td><td class="font-mono text-green">20.18%</td><td class="font-mono text-green">22.12%</td></tr>
+            <tr><td>หลังไถ่ถอน AT1 (est.)</td><td class="font-mono text-orange">~19.20%</td><td class="font-mono text-orange">~21.15%</td></tr>
+            <tr><td>เกณฑ์ขั้นต่ำ ธปท.</td><td class="font-mono">9.50%</td><td class="font-mono">12.00%</td></tr>
+            <tr><td>ส่วนเกินหลังไถ่ถอน</td><td class="font-mono text-green">+9.70%</td><td class="font-mono text-green">+9.15%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ============================================================
+     TAB 5: VALUATION
+     ============================================================ -->
+<div id="tab-valuation" class="tab-panel">
+<div class="container">
+  <div class="section-title">📈 การประเมินมูลค่าหุ้น</div>
+
+  <!-- Valuation Grid -->
+  <div class="grid-4 mb-24">
+    <div class="kpi">
+      <div class="kpi-label">ราคาปัจจุบัน</div>
+      <div class="kpi-value">28.25</div>
+      <div class="kpi-sub">บาท/หุ้น</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Book Value/Share</div>
+      <div class="kpi-value">31.71</div>
+      <div class="kpi-sub">บาท (TBV 443,241÷13,976M)</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">P/BV</div>
+      <div class="kpi-value gold">0.89×</div>
+      <div class="kpi-sub">ต่ำกว่า Book Value!</div>
+      <span class="kpi-badge badge-green">Undervalued ✨</span>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">P/E Ratio</div>
+      <div class="kpi-value">8.19×</div>
+      <div class="kpi-sub">EPS ฿3.45</div>
+      <span class="kpi-badge badge-green">ถูกมาก vs ตลาด</span>
+    </div>
+  </div>
+
+  <div class="grid-2 mb-24">
+    <!-- P/BV Chart -->
+    <div class="card">
+      <div class="card-title">📊 P/BV Historical Band Analysis</div>
+      <div class="chart-wrap">
+        <canvas id="chartPBV"></canvas>
+      </div>
+      <div class="grid-3" style="margin-top:12px;gap:8px">
+        <div style="background:#FDEDEC;border-radius:8px;padding:10px;text-align:center">
+          <div class="text-xs text-red">P/BV ปัจจุบัน</div>
+          <div style="font-size:18px;font-weight:800;color:var(--danger);font-family:'IBM Plex Mono'">0.89×</div>
+          <div class="text-xs">ต่ำกว่า Mean</div>
+        </div>
+        <div style="background:#EBF5FB;border-radius:8px;padding:10px;text-align:center">
+          <div class="text-xs" style="color:#1A5276">Mean 5 ปี</div>
+          <div style="font-size:18px;font-weight:800;color:var(--primary);font-family:'IBM Plex Mono'">~1.0×</div>
+          <div class="text-xs">ราคา ~฿31.7</div>
+        </div>
+        <div style="background:#EAFAF1;border-radius:8px;padding:10px;text-align:center">
+          <div class="text-xs text-green">ราคาเป้า (Mean)</div>
+          <div style="font-size:18px;font-weight:800;color:var(--success);font-family:'IBM Plex Mono'">฿31-34</div>
+          <div class="text-xs">Upside ~10-20%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Target Price Scenario -->
+    <div class="card">
+      <div class="card-title">🎯 ราคาเป้าหมายตาม P/BV Band</div>
+      <table class="styled-table">
+        <thead><tr><th>P/BV Multiple</th><th>ราคาเป้า (฿)</th><th>Upside/Downside</th><th>โอกาส</th></tr></thead>
+        <tbody>
+          <tr><td>0.70× (เกินขาย)</td><td class="font-mono">22.20</td><td class="text-red">-21.4%</td><td>Risk Scenario</td></tr>
+          <tr style="background:#FEF9E7"><td>0.89× (ปัจจุบัน)</td><td class="font-mono text-orange">28.25</td><td class="text-orange">—</td><td>ราคาตลาดปัจจุบัน</td></tr>
+          <tr style="background:#EBF5FB"><td>1.00× (Mean)</td><td class="font-mono text-blue">31.71</td><td class="text-green">+12.3%</td><td>Base Case</td></tr>
+          <tr style="background:#EAFAF1"><td>1.10× (Mean+)</td><td class="font-mono text-green">34.88</td><td class="text-green">+23.5%</td><td>Bull Case</td></tr>
+          <tr><td>1.25× (+1SD)</td><td class="font-mono text-green">39.64</td><td class="text-green">+40.3%</td><td>High Growth Scenario</td></tr>
+          <tr><td>1.50× (FY21 High)</td><td class="font-mono text-green">47.57</td><td class="text-green">+68.4%</td><td>Euphoria Scenario</td></tr>
+        </tbody>
+      </table>
+      <div class="alert alert-green" style="margin-top:12px">
+        🎯 <strong>ราคาเป้าหมาย 12 เดือน: ฿31-34</strong> (P/BV 1.00-1.10×) — Upside ~12-23% + Dividend Yield 9.45% = <strong>Total Return ~22-32%</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROE vs P/BV -->
+  <div class="card mb-24">
+    <div class="card-title">🔍 ROE vs P/BV Analysis – KTB เทียบธนาคารอื่น (ประมาณการ)</div>
+    <div class="chart-wrap">
+      <canvas id="chartROEvPBV"></canvas>
+    </div>
+    <div class="alert alert-blue" style="margin-top:12px">
+      📊 ROE 13.19% ที่ P/BV เพียง 0.89× — KTB เป็นหุ้นที่ตลาดให้ discount สูงเพราะภาพลักษณ์ "ธนาคารรัฐ" แต่ในแง่ผลตอบแทนจริง ถือว่า Undervalued อย่างชัดเจน เมื่อเทียบกับ International Bank ที่ ROE 10-12% ซื้อขายที่ 1.2-1.5× P/BV
+    </div>
+  </div>
+
+  <!-- Investment Thesis -->
+  <div class="card">
+    <div class="card-title">📜 Investment Thesis 2026-2028</div>
+    <div class="grid-2">
+      <div>
+        <div style="font-weight:700;color:var(--success);margin-bottom:10px">✅ เหตุผลลงทุน</div>
+        <div class="timeline">
+          <div class="t-item">
+            <div class="t-dot" style="background:var(--success)"></div>
+            <div class="t-label">P/BV 0.89× — ต่ำกว่า Book Value</div>
+            <div class="t-text">ซื้อสินทรัพย์มูลค่า ฿31.71 ในราคา ฿28.25 — Margin of Safety สูง</div>
+          </div>
+          <div class="t-item">
+            <div class="t-dot" style="background:var(--success)"></div>
+            <div class="t-label">Dividend Yield 9.45% + เครดิตภาษี</div>
+            <div class="t-text">Total dividend ~฿2.67 ต่อปี + เครดิตภาษี ฿0.67 = ได้จริง ฿3.34/หุ้น</div>
+          </div>
+          <div class="t-item">
+            <div class="t-dot" style="background:var(--success)"></div>
+            <div class="t-label">เงินกองทุนแข็งแกร่ง 22.12%</div>
+            <div class="t-text">รับมือวิกฤตได้ดี และยังมี Buffer จ่ายปันผลสม่ำเสมอ</div>
+          </div>
+          <div class="t-item">
+            <div class="t-dot" style="background:var(--success)"></div>
+            <div class="t-label">Ecosystem ภาครัฐไม่มีคู่แข่ง</div>
+            <div class="t-text">Paotang 50M users, GFMIS, บัตรสวัสดิการแห่งรัฐ 14M คน</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="font-weight:700;color:var(--danger);margin-bottom:10px">⚠️ ความเสี่ยงที่ต้องติดตาม</div>
+        <div class="alert alert-yellow mb-8">NIM ยังคงกดดัน หาก ธปท. ลดดอกเบี้ย 2 ครั้งในปี 2026</div>
+        <div class="alert alert-yellow mb-8">NPL Stage 2 เพิ่มจาก 7.13% → 7.65% — สัญญาณเตือน</div>
+        <div class="alert alert-yellow mb-8">สินเชื่อโตช้า +0.46% — ต่ำมากถ้าเทียบ GDP growth 2.5-3%</div>
+        <div class="alert alert-red">ค่าตัดจำหน่าย IT สูงขึ้น 14.8% — ต้นทุนดิจิทัลยังไม่เห็น ROI ชัด</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ============================================================
+     TAB 6: DIVIDEND CALCULATOR
+     ============================================================ -->
+<div id="tab-dividend" class="tab-panel">
+<div class="container">
+  <div class="section-title">🎯 เงินปันผลและเครดิตภาษี</div>
+
+  <!-- Dividend History -->
+  <div class="card mb-24">
+    <div class="card-title">📅 ประวัติเงินปันผล KTB</div>
+    <table class="styled-table">
+      <thead><tr><th>ปี (งบ)</th><th>เงินปันผล/หุ้น</th><th>วันจ่าย</th><th>Payout Ratio</th><th>Yield ที่ ราคา ณ วันนั้น</th><th>หมายเหตุ</th></tr></thead>
+      <tbody>
+        <tr style="background:#EAFAF1"><td class="fw-700">FY2568 (2025) E</td><td class="font-mono fw-700 text-green">2.6700 บาท</td><td>พ.ค.69 (คาด)</td><td class="text-orange">77.4%</td><td class="text-green fw-700">9.45%</td><td><span class="tag tag-green">กำลังจะจ่าย</span></td></tr>
+        <tr><td>FY2567 (2024)</td><td class="font-mono">1.5450 บาท</td><td>2 พ.ค. 2568</td><td>—</td><td>~7.9%</td><td>จ่ายแล้ว</td></tr>
+        <tr><td>ระหว่างกาล FY2568</td><td class="font-mono">0.4300 บาท</td><td>27 พ.ย. 2568</td><td>—</td><td>—</td><td>จ่ายแล้ว</td></tr>
+        <tr><td>FY2566 (2023)</td><td class="font-mono">0.8680 บาท</td><td>3 พ.ค. 2567</td><td>~57%</td><td>~5.4%</td><td>จ่ายแล้ว</td></tr>
+      </tbody>
+    </table>
+    <div class="alert alert-blue" style="margin-top:12px">
+      🏦 <strong>เครดิตภาษีเงินปันผล:</strong> KTB เสียภาษีนิติบุคคล 20% → นักลงทุนที่ได้รับปันผลมีสิทธิขอเครดิตภาษี = <strong>ปันผล × 20/80 = 25% ของเงินปันผล</strong> — นำมาหักภาษีบุคคลธรรมดาได้
+    </div>
+  </div>
+
+  <!-- Calculator -->
+  <div class="grid-2 mb-24">
+    <div class="card">
+      <div class="card-title">🔢 คำนวณปันผล & เครดิตภาษี</div>
+      <div class="calc-wrap">
+        <div class="form-group">
+          <label>ราคาที่ซื้อ (บาท/หุ้น)</label>
+          <input class="form-control" id="buyPrice" type="number" value="28.25" step="0.25">
+        </div>
+        <div class="form-group">
+          <label>จำนวนหุ้น (หุ้น)</label>
+          <input class="form-control" id="numShares" type="number" value="10000" step="100">
+        </div>
+        <div class="form-group">
+          <label>เงินปันผลต่อหุ้น FY25E (บาท)</label>
+          <input class="form-control" id="divPerShare" type="number" value="2.67" step="0.01">
+        </div>
+        <div class="form-group">
+          <label>อัตราภาษีเงินปันผลบุคคลธรรมดา (%)</label>
+          <input class="form-control" id="taxRate" type="number" value="10" step="5">
+        </div>
+        <button class="btn-calc" onclick="calcDividend()">🧮 คำนวณ</button>
+      </div>
+      <div class="result-box" id="calcResult">
+        <div class="result-row"><span class="result-key">เงินลงทุนรวม</span><span class="result-val" id="rTotalInvest">—</span></div>
+        <div class="result-row"><span class="result-key">ปันผลรวม (ก่อนภาษี)</span><span class="result-val" id="rGrossDivs">—</span></div>
+        <div class="result-row"><span class="result-key">เครดิตภาษี (ได้คืน 25%)</span><span class="result-val" id="rTaxCredit">—</span></div>
+        <div class="result-row"><span class="result-key">ปันผล + เครดิตภาษี รวม</span><span class="result-val" id="rTotalDiv">—</span></div>
+        <div class="result-row"><span class="result-key">Dividend Yield (เงินสด)</span><span class="result-val" id="rYield">—</span></div>
+        <div class="result-row"><span class="result-key">Effective Yield (รวมเครดิต)</span><span class="result-val big" id="rEffYield">—</span></div>
+      </div>
+    </div>
+
+    <!-- Goal-Based Calculator -->
+    <div class="card">
+      <div class="card-title">🎯 คำนวณเป้าหมายปันผล</div>
+      <div class="calc-wrap">
+        <div class="form-group">
+          <label>ต้องการปันผล (บาท/ปี)</label>
+          <input class="form-control" id="targetDiv" type="number" value="100000" step="10000">
+        </div>
+        <div class="form-group">
+          <label>ราคาซื้อที่วางแผน (บาท/หุ้น)</label>
+          <input class="form-control" id="planPrice" type="number" value="28.25" step="0.25">
+        </div>
+        <div class="form-group">
+          <label>เงินปันผล FY25E (บาท/หุ้น)</label>
+          <input class="form-control" id="planDiv" type="number" value="2.67" step="0.01">
+        </div>
+        <button class="btn-calc" onclick="calcGoal()">🎯 คำนวณเป้าหมาย</button>
+      </div>
+      <div class="result-box" id="goalResult">
+        <div class="result-row"><span class="result-key">จำนวนหุ้นที่ต้องถือ</span><span class="result-val" id="gShares">—</span></div>
+        <div class="result-row"><span class="result-key">เงินลงทุนที่ต้องใช้</span><span class="result-val" id="gInvest">—</span></div>
+        <div class="result-row"><span class="result-key">ปันผลที่จะได้รับ/ปี</span><span class="result-val" id="gDiv">—</span></div>
+        <div class="result-row"><span class="result-key">รวมเครดิตภาษี</span><span class="result-val big" id="gTotal">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DCA Table -->
+  <div class="card mb-24">
+    <div class="card-title">📉 ตารางสะสมหุ้น DCA – Dividend Yield ที่ราคาต่างกัน (FY25E ฿2.67/หุ้น)</div>
+    <div style="overflow-x:auto">
+    <table class="styled-table dca-table" id="dcaTable">
+      <thead>
+        <tr>
+          <th>ราคาซื้อ (฿)</th>
+          <th>P/BV</th>
+          <th class="text-right">Div Yield</th>
+          <th class="text-right">+เครดิตภาษี<br><span style="font-weight:400;font-size:11px">(เสียภาษี 20%)</span></th>
+          <th class="text-right">ปันผล/1,000 หุ้น</th>
+          <th class="text-right">ปันผล/5,000 หุ้น</th>
+          <th class="text-right">ปันผล/10,000 หุ้น</th>
+          <th class="text-right">ปันผล/50,000 หุ้น</th>
+          <th>สถานะ</th>
+        </tr>
+      </thead>
+      <tbody id="dcaBody"></tbody>
+    </table>
+    </div>
+    <div style="font-size:12px;color:var(--text-muted);margin-top:10px">
+      * เครดิตภาษี = ปันผล × 25% (KTB เสียภาษีนิติบุคคล 20%) | Effective yield = ปันผล รวมเครดิต ÷ ราคาซื้อ
+    </div>
+  </div>
+
+  <!-- Multi-Price Comparison -->
+  <div class="card">
+    <div class="card-title">📊 เปรียบเทียบ Total Return ตามราคาซื้อ (Dividend + Upside)</div>
+    <div class="chart-wrap">
+      <canvas id="chartTotalReturn"></canvas>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<footer class="footer">
+  ⚠️ รายงานนี้จัดทำเพื่อการศึกษาและเป็นข้อมูลประกอบการตัดสินใจเท่านั้น ไม่ใช่คำแนะนำซื้อขายหลักทรัพย์ · ข้อมูลจากงบการเงิน KTB ปีสิ้นสุด 31 ธ.ค. 2568 (อนุมัติ 25 ก.พ. 2569) · Claude AI Analysis
+</footer>
+
+<script>
+// ── TABS ──
+function showTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// ── COLOR PALETTE ──
+const C = {
+  primary: '#0A3D62', accent: '#16A085', accent2: '#E67E22',
+  success: '#27AE60', danger: '#C0392B', gold: '#D4AC0D',
+  blue2: '#2980B9', purple: '#8E44AD'
+};
+
+// ── CHART: Revenue Trend ──
+new Chart(document.getElementById('chartRevenue'), {
+  type: 'bar',
+  data: {
+    labels: ['Q1/66','Q2/66','Q3/66','Q4/66','Q1/67','Q2/67','Q3/67','Q4/67','Q1/68','Q2/68','Q3/68','Q4/68'],
+    datasets: [
+      {
+        label: 'NII (ล้านบาท)',
+        data: [31200,30800,30600,30200,31500,30700,29800,27115,27500,26500,27000,24781],
+        backgroundColor: 'rgba(10,61,98,0.7)', borderRadius: 4, yAxisID: 'y'
+      },
+      {
+        label: 'กำไรสุทธิ',
+        data: [11500,10800,10300,10400,11800,11700,14620,11800,14000,11122,11714,15385],
+        type: 'line', borderColor: C.success, backgroundColor: 'rgba(39,174,96,0.1)',
+        fill: true, tension: 0.4, pointRadius: 4, yAxisID: 'y'
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'top' } },
+    scales: { y: { beginAtZero: false, grid: { color: '#F0F0F0' } } }
+  }
+});
+
+// ── CHART: NPL Stage Donut ──
+new Chart(document.getElementById('chartNPL'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Stage 1 (ปกติ)', 'Stage 2 (เฝ้าระวัง)', 'Stage 3 (NPL)'],
+    datasets: [{
+      data: [88.9, 7.65, 3.38],
+      backgroundColor: [C.primary, C.accent2, C.danger],
+      borderWidth: 3, borderColor: '#fff'
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' },
+      tooltip: { callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed + '%' } }
+    },
+    cutout: '65%'
+  }
+});
+
+// ── CHART: Revenue Mix ──
+new Chart(document.getElementById('chartRevMix'), {
+  type: 'pie',
+  data: {
+    labels: ['NII (ดอกเบี้ย)', 'Fee (ค่าธรรมเนียม)', 'กำไร FX/ตราสาร', 'ส่วนแบ่งกำไรบ.ร่วม', 'อื่นๆ'],
+    datasets: [{
+      data: [65.9, 14.3, 7.1, 2.8, 9.9],
+      backgroundColor: [C.primary, C.accent, C.accent2, C.gold, '#95A5A6'],
+      borderWidth: 2, borderColor: '#fff'
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'right' }, tooltip: { callbacks: { label: ctx => ctx.label+': '+ctx.parsed+'%' } } }
+  }
+});
+
+// ── CHART: Loan Sector ──
+new Chart(document.getElementById('chartLoanSector'), {
+  type: 'horizontalBar',
+  data: {
+    labels: ['อื่น ๆ (รายย่อย)', 'สาธารณูปโภค & บริการ', 'สินเชื่อที่อยู่อาศัย', 'อุตสาหกรรม & พาณิชย์', 'อสังหาฯ & ก่อสร้าง', 'เกษตร & เหมืองแร่'],
+    datasets: [{
+      data: [29.5, 27.8, 19.7, 17.1, 5.0, 0.9],
+      backgroundColor: [C.primary, C.accent, C.success, C.accent2, C.blue2, C.gold],
+      borderRadius: 4
+    }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: { x: { beginAtZero: true, ticks: { callback: v => v + '%' } } }
+  }
+});
+
+// ── CHART: Capital Structure ──
+new Chart(document.getElementById('chartCapital'), {
+  type: 'bar',
+  data: {
+    labels: ['ธ.ค. 2567', 'ธ.ค. 2568'],
+    datasets: [
+      { label: 'CET1', data: [387968, 411878], backgroundColor: C.primary, borderRadius: 4 },
+      { label: 'AT1', data: [20121, 20045], backgroundColor: C.accent, borderRadius: 4 },
+      { label: 'Tier 2', data: [41269, 41602], backgroundColor: C.accent2, borderRadius: 4 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'top' } },
+    scales: { x: { stacked: true }, y: { stacked: true, ticks: { callback: v => (v/1000).toFixed(0)+'K' } } }
+  }
+});
+
+// ── CHART: P/BV Historical Band ──
+new Chart(document.getElementById('chartPBV'), {
+  type: 'line',
+  data: {
+    labels: ['2562','2563','2564','2565','2566','Q1/67','Q2/67','Q3/67','Q4/67','Q1/68','Q2/68','Q3/68','Q4/68'],
+    datasets: [
+      { label: 'P/BV KTB', data: [0.76, 0.57, 0.63, 0.69, 0.70, 0.75, 0.78, 0.82, 0.81, 0.84, 0.80, 0.82, 0.89], borderColor: C.primary, backgroundColor: 'rgba(10,61,98,0.08)', fill: true, tension: 0.4, pointRadius: 4 },
+      { label: 'Mean ~1.0×', data: Array(13).fill(1.00), borderColor: C.success, borderDash: [6,3], borderWidth: 2, pointRadius: 0 },
+      { label: '+1SD ~1.25×', data: Array(13).fill(1.25), borderColor: C.accent2, borderDash: [4,4], borderWidth: 1.5, pointRadius: 0 },
+      { label: '-1SD ~0.75×', data: Array(13).fill(0.75), borderColor: C.danger, borderDash: [4,4], borderWidth: 1.5, pointRadius: 0 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'top' } },
+    scales: { y: { min: 0.4, max: 1.5 } }
+  }
+});
+
+// ── CHART: ROE vs P/BV Scatter ──
+new Chart(document.getElementById('chartROEvPBV'), {
+  type: 'scatter',
+  data: {
+    datasets: [
+      { label: 'KTB', data: [{x: 13.19, y: 0.89}], backgroundColor: C.danger, pointRadius: 12, pointStyle: 'star' },
+      { label: 'SCB', data: [{x: 10.5, y: 0.90}], backgroundColor: C.primary, pointRadius: 8 },
+      { label: 'KBANK', data: [{x: 9.8, y: 0.85}], backgroundColor: C.accent, pointRadius: 8 },
+      { label: 'BBL', data: [{x: 8.2, y: 0.70}], backgroundColor: C.blue2, pointRadius: 8 },
+      { label: 'TISCO', data: [{x: 15.5, y: 1.50}], backgroundColor: C.accent2, pointRadius: 8 },
+      { label: 'KKP', data: [{x: 10.0, y: 0.75}], backgroundColor: C.gold, pointRadius: 8 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'top' }, tooltip: { callbacks: { label: ctx => ctx.dataset.label+': ROE '+ctx.parsed.x+'%, P/BV '+ctx.parsed.y+'×' } } },
+    scales: {
+      x: { title: { display: true, text: 'ROE (%)' }, min: 6, max: 18 },
+      y: { title: { display: true, text: 'P/BV (×)' }, min: 0.5, max: 2.0 }
+    }
+  }
+});
+
+// ── CHART: Total Return ──
+const prices = [22, 24, 26, 28.25, 30, 32, 34];
+const divYields = prices.map(p => (2.67/p*100).toFixed(2));
+const upside = prices.map(p => ((31.71 - p)/p*100 + 2.67/p*100).toFixed(1));
+new Chart(document.getElementById('chartTotalReturn'), {
+  type: 'bar',
+  data: {
+    labels: prices.map(p => '฿'+p),
+    datasets: [
+      { label: 'Dividend Yield %', data: divYields, backgroundColor: C.success, borderRadius: 4 },
+      { label: 'Capital Gain (to BV)', data: prices.map(p => Math.max(0,(31.71-p)/p*100).toFixed(1)), backgroundColor: 'rgba(10,61,98,0.6)', borderRadius: 4 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'top' } },
+    scales: { x: { stacked: true }, y: { stacked: true, ticks: { callback: v => v+'%' } } }
+  }
+});
+
+// ── DCA TABLE ──
+function buildDCA() {
+  const divPS = 2.67;
+  const bv = 31.71;
+  const taxCredit = 0.25; // 25% of dividend
+  const rows = [
+    { price: 22.00, label: '-22%', cls: 'text-green' },
+    { price: 24.00, label: '-15%', cls: 'text-green' },
+    { price: 26.00, label: '-8%', cls: 'text-green' },
+    { price: 27.00, label: '-4%', cls: 'text-green' },
+    { price: 28.25, label: '▶ ราคาปัจจุบัน', cls: 'text-orange', highlight: true },
+    { price: 30.00, label: '+6%', cls: '' },
+    { price: 32.00, label: '+13%', cls: '' },
+    { price: 34.00, label: '+20%', cls: '' },
+    { price: 36.00, label: '+27%', cls: 'text-red' }
+  ];
+  const lots = [1000, 5000, 10000, 50000];
+  let html = '';
+  rows.forEach(r => {
+    const divYield = (divPS / r.price * 100).toFixed(2);
+    const effYield = (divPS * (1 + taxCredit) / r.price * 100).toFixed(2);
+    const pbv = (r.price / bv).toFixed(2);
+    const divAmounts = lots.map(l => (l * divPS).toLocaleString('th-TH', {maximumFractionDigits: 0}));
+    const hlClass = r.highlight ? 'dca-highlight' : '';
+    html += `<tr class="${hlClass}">
+      <td class="font-mono fw-700 ${r.cls}">฿${r.price.toFixed(2)} <span class="text-xs opacity-70">${r.label}</span></td>
+      <td class="text-center font-mono">${pbv}×</td>
+      <td class="text-right font-mono text-green fw-700">${divYield}%</td>
+      <td class="text-right font-mono" style="color:var(--accent)">${effYield}%</td>
+      ${divAmounts.map(d => `<td class="text-right font-mono">฿${d}</td>`).join('')}
+      <td>${r.highlight ? '<span class="tag tag-orange">ปัจจุบัน</span>' : r.price < 28.25 ? '<span class="tag tag-green">Accumulate</span>' : '<span class="tag tag-blue">ถือเพิ่ม</span>'}</td>
+    </tr>`;
+  });
+  document.getElementById('dcaBody').innerHTML = html;
+}
+buildDCA();
+
+// ── DIVIDEND CALCULATOR ──
+function calcDividend() {
+  const price = parseFloat(document.getElementById('buyPrice').value) || 28.25;
+  const shares = parseFloat(document.getElementById('numShares').value) || 10000;
+  const div = parseFloat(document.getElementById('divPerShare').value) || 2.67;
+  const taxRate = parseFloat(document.getElementById('taxRate').value) || 10;
+
+  const totalInvest = price * shares;
+  const grossDiv = div * shares;
+  const taxCredit = grossDiv * 0.25; // 25% credit (20% corp tax)
+  const totalWithCredit = grossDiv + taxCredit;
+  const yield_ = (grossDiv / totalInvest * 100).toFixed(2);
+  const effYield = (totalWithCredit / totalInvest * 100).toFixed(2);
+
+  const fmt = n => n.toLocaleString('th-TH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  document.getElementById('rTotalInvest').textContent = '฿' + fmt(totalInvest);
+  document.getElementById('rGrossDivs').textContent = '฿' + fmt(grossDiv);
+  document.getElementById('rTaxCredit').textContent = '฿' + fmt(taxCredit);
+  document.getElementById('rTotalDiv').textContent = '฿' + fmt(totalWithCredit);
+  document.getElementById('rYield').textContent = yield_ + '%';
+  document.getElementById('rEffYield').textContent = effYield + '%';
+}
+
+function calcGoal() {
+  const target = parseFloat(document.getElementById('targetDiv').value) || 100000;
+  const price = parseFloat(document.getElementById('planPrice').value) || 28.25;
+  const div = parseFloat(document.getElementById('planDiv').value) || 2.67;
+
+  const sharesNeeded = Math.ceil(target / div);
+  const investNeeded = sharesNeeded * price;
+  const actualDiv = sharesNeeded * div;
+  const withCredit = actualDiv * 1.25;
+
+  const fmt = n => n.toLocaleString('th-TH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  const fmtInt = n => n.toLocaleString('th-TH');
+
+  document.getElementById('gShares').textContent = fmtInt(sharesNeeded) + ' หุ้น';
+  document.getElementById('gInvest').textContent = '฿' + fmt(investNeeded);
+  document.getElementById('gDiv').textContent = '฿' + fmt(actualDiv);
+  document.getElementById('gTotal').textContent = '฿' + fmt(withCredit) + ' (+เครดิต)';
+}
+
+// Auto-calculate on load
+calcDividend();
+calcGoal();
+</script>
+</body>
+</html>
